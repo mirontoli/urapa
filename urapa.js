@@ -25,19 +25,20 @@ urapa.replace = function(code) {
 		var text = urapa.input.innerText;
 		var newText;
 		if (code == 69) {
-			newText = text.replace(/.$/, "ĕ");
+            newText = "ĕ";
 		}
 		if (code == 85) {
-			newText = text.replace(/.$/, "ü");
+			newText = "ü";
 		}
 		if (code == 83) {
-			newText = text.replace(/.$/, "š");
+			newText = "š";
 		}
 		if (code == 65) {
-			newText = text.replace(/.$/, "ă");
+			newText = "ă";
 		}
 		if (newText) {
-			urapa.input.innerText = newText;
+			urapa.input.innerText = text + newText;
+            return true;
 		}
 	}
 };
@@ -46,12 +47,17 @@ urapa.keydown = function(e) {
 	var code = event.keyCode || event.which;
 	console.log(code);
 	if (code == 18) urapa.isAlt = true;
-	else urapa.replace(code);
+	else {
+        var replaced = urapa.replace(code);
+        if (replaced) {
+            event.preventDefault();
+        }
+	}
 };
 urapa.keyup = function(e) {
 	var event = window.event || e;
 	var code = event.keyCode || event.which;
 	console.log(code);
 	if (code == 18) urapa.isAlt = false;
-	else urapa.replace(code);
+	//else urapa.replace(code);
 }; 
