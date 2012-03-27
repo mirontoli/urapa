@@ -12,7 +12,6 @@ There are no dependencies with other javascript libraries.
 
 There are some other javascript solutions for keyboards which can be considered under the development:
 
-  * [VirtualKeyboard](http://allanguages.info): The smartest keyboard. 
-    Supports 230 keyboard layouts, enables writing in different languages without installing the layout in OS and provides themable virtual keyboards
+  * [VirtualKeyboard](http://allanguages.info): The smartest keyboard. Supports 230 keyboard layouts, enables writing in different languages without installing the layout in OS and provides themable virtual keyboards
   * [jQuery UI virtual keyboard](http://wiki.jqueryui.com/w/page/32615464/Virtual%20Keyboard) Only provides the visual keyboard and disables direct input into text field.
 
