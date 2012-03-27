@@ -1,5 +1,7 @@
 # Chuvash keyboard layout for web
 
+Urapa ([/uraba/](http://en.wikipedia.org/wiki/Chuvash_language)) is a light-weight javascript library for writing Chuvash. 
+
 There are many install packages you can use for typing in Chuvash, unless you are using Linux, where the Chuvash keyboard is already preinstalled. 
 With this little javascript library you will be able to give the ability to write Chuvash (in Cyrillic and Latin) by adding the functionality to your input field (textarea, input, or why not a div with contenteditable attr).
 
