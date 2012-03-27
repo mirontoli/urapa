@@ -4,11 +4,13 @@
 //http://www.myvirtualkeyboard.com/index.php
 
 //var console = window.console || { log: function() {}};
-var urapa = {};
-urapa.isAlt = false;
-urapa.log = function(msg) {
-    console.log(msg);
+var urapa = function(elem) {
+    urapa.input = elem;
+    console.log(elem);
+    urapa.listen("keydown", urapa.input, urapa.keydown);
+	urapa.listen("keyup", urapa.input, urapa.keyup);
 };
+urapa.isAlt = false;
 urapa.listen = function(evnt, elem, func) {
     //http://snipplr.com/view/3116/cross-browser-add-event-listener/
     if (elem.addEventListener)  // W3C DOM
@@ -42,21 +44,18 @@ urapa.replace = function(code) {
 urapa.keydown = function(e) {
 	var event = window.event || e;
 	var code = event.keyCode || event.which;
-	urapa.log(code);
+	console.log(code);
 	if (code == 18) urapa.isAlt = true;
 	else urapa.replace(code);
 };
 urapa.keyup = function(e) {
 	var event = window.event || e;
 	var code = event.keyCode || event.which;
-	urapa.log(code);
+	console.log(code);
 	if (code == 18) urapa.isAlt = false;
 	else urapa.replace(code);
+}; 
+window.onload = function() {
+    var input = document.getElementById("input");
+    urapa(input);
 };
-urapa.init = function() {
-	urapa.input = document.getElementById("input");
-	urapa.listen("keydown", urapa.input, urapa.keydown);
-	urapa.listen("keyup", urapa.input, urapa.keyup);
-	urapa.logArea = document.getElementById("log");
-};
-window.onload = urapa.init;
