@@ -22,6 +22,7 @@ urapa.listen = function(evnt, elem, func) {
 };
 //courtesy to http://alexking.org/blog/2003/06/02/inserting-at-the-cursor-using-javascript
 urapa.insertAtCursor = function(elem, text) {
+    elem.focus();
     //IE support
     if (document.selection) {
         elem.focus();
@@ -31,10 +32,14 @@ urapa.insertAtCursor = function(elem, text) {
     //MOZILLA/NETSCAPE support
     else if (elem.selectionStart || elem.selectionStart == '0') {
         var startPos = elem.selectionStart;
+        console.log("startPos: " + startPos);
         var endPos = elem.selectionEnd;
         var before = elem.value.substring(0, startPos);
         var after = elem.value.substring(endPos, elem.value.length);
-        elem.value = before + text + after; 
+        elem.value = before + text + after;
+        //set selection right:
+        //http://stackoverflow.com/questions/4479825/placing-a-cursor-after-text-insertion-into-textarea/4482818#4482818
+        elem.selectionEnd = elem.selectionStart = startPos + text.length;
     } else {
         elem.value += text;
     }
