@@ -20,24 +20,42 @@ urapa.listen = function(evnt, elem, func) {
 	return r;
     }
 };
+//courtesy to http://alexking.org/blog/2003/06/02/inserting-at-the-cursor-using-javascript
+urapa.insertAtCursor = function(elem, text) {
+    //IE support
+    if (document.selection) {
+        elem.focus();
+        var sel = document.selection.createRange();
+        sel.text = text;
+    }
+    //MOZILLA/NETSCAPE support
+    else if (elem.selectionStart || elem.selectionStart == '0') {
+        var startPos = elem.selectionStart;
+        var endPos = elem.selectionEnd;
+        var before = elem.value.substring(0, startPos);
+        var after = elem.value.substring(endPos, elem.value.length);
+        elem.value = before + text + after; 
+    } else {
+        elem.value += text;
+    }
+};
 urapa.replace = function(code) {
 	if (urapa.isAlt) {
-		var text = urapa.input.innerText;
-		var newText;
+		var text;
 		if (code == 69) {
-            newText = "ĕ";
+            text = "ĕ";
 		}
 		if (code == 85) {
-			newText = "ü";
+			text = "ü";
 		}
 		if (code == 83) {
-			newText = "š";
+			text = "š";
 		}
 		if (code == 65) {
-			newText = "ă";
+			text = "ă";
 		}
-		if (newText) {
-			urapa.input.innerText = text + newText;
+		if (text) {
+            urapa.insertAtCursor(urapa.input, text);
             return true;
 		}
 	}
