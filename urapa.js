@@ -1,6 +1,7 @@
 //http://stackoverflow.com/questions/946534/insert-text-into-textarea-with-jquery
 //http://stackoverflow.com/questions/946534/insert-text-into-textarea-with-jquery
 //http://stackoverflow.com/questions/263743/how-to-get-cursor-position-in-textarea
+//http://asquare.net/javascript/tests/KeyCode.html
 //http://www.myvirtualkeyboard.com/index.php
 
 //var console = window.console || { log: function() {}};
