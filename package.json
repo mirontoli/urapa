@@ -23,5 +23,8 @@
   "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/mirontoli/urapa/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5"
   }
 }
