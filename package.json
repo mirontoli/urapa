@@ -1,0 +1,27 @@
+{
+  "name": "urapa",
+  "version": "0.0.0",
+  "description": "Chuvash Mobile Input Tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mirontoli/urapa.git"
+  },
+  "keywords": [
+    "Chuvash",
+    "keyboard",
+    "mobile",
+    "input",
+    "method",
+    "web",
+    "app"
+  ],
+  "author": "Anatoly Mironov",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/mirontoli/urapa/issues"
+  }
+}
