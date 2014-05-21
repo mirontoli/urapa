@@ -21,12 +21,12 @@
   </head>
   <body>
   <label for="input">Ҫыр:</label>
-  <input type="button" value="dia">
+  <input id="diacritics" type="button" value="dia" disabled>
   <br>
-  <textarea id="input"></textarea>
+  <textarea id="input" autofocus></textarea>
   <div id="actions">
     <input type="reset" value="тасат">
-    <input type="submit" value="копиле">
+    <input type="submit" value="суйла">
     <input type="button" value="ӑ">
     <input type="button" value="ӗ">
     <input type="button" value="ҫ">
@@ -36,46 +36,78 @@
 
 var regex = /(?:[аесу])ьь/i;
 var mapping = {"а": "ӑ", "е": "ӗ", "с": "ҫ", "у": "ӳ"};
+var input = document.getElementById("input");
+var diacritics = document.getElementById("diacritics");
+var actions = document.getElementById("actions");
+
+var currentPosition;
+
+var mapLetter = function(letter) {
+  var loweredLetter = letter.toLowerCase();
+  var inLowerCase = loweredLetter === letter;
+  var desiredLetter = mapping[loweredLetter];
+  var desiredLetterInRightCase = inLowerCase ? desiredLetter : desiredLetter.toUpperCase();
+  return desiredLetterInRightCase;
+};
+
+var enableDiacriticsButtonIfNeeded = function() {
+  if (input.value && input.selectionStart === input.selectionEnd) {
+    currentPosition = input.selectionStart;
+    var lastLetter = input.value[currentPosition - 1];
+    diacritics.disabled = !/[аесу]/i.test(lastLetter);
+  }
+};
+
+var currentPosition;
 var replace = function(value) {
   var matches = regex.exec(value);
   if (matches) {
     var match = matches[0];
-    var firstLetter = match[0];
-    var loweredFirstLetter = firstLetter.toLowerCase();
-    var inLowerCase = loweredFirstLetter === firstLetter;
-    var desiredLetter = mapping[loweredFirstLetter];
-    var desiredLetterInRightCase = inLowerCase ? desiredLetter : desiredLetter.toUpperCase();
-    var newValue = value.replace(regex, desiredLetterInRightCase);
+    currentPosition = value.indexOf(match) + 1;
+    var letter = match[0];
+    var newValue = value.replace(regex, mapLetter(letter));
     return replace(newValue);
   }
   return value;
 };
-var input = document.getElementById("input");
+
 input.addEventListener("keyup", function(e) {
-  var elem = e.target;
-  var value = elem.value;
-  console.log("value", value);
+  var value = input.value;
   if (regex.test(value)) {
-    console.log("ba");
     var newValue = replace(value);
     if (value !== newValue) {
-      elem.value = newValue;
+      input.value = newValue;
+      input.setSelectionRange(currentPosition,currentPosition);
     }
   }
-} );
-var actions = document.getElementById("actions");
+  enableDiacriticsButtonIfNeeded();
+});
+
+
 actions.addEventListener("click", function(e) {
   var elem = e.target;
+  if (elem.nodeName.toLowerCase() !== "input") {
+    return;
+  }
+  input.focus();
   if (elem.type === "button") {
     input.value = input.value + elem.value;
-  }
-  
+  } 
   else if (elem.type === "reset") {
     input.value = "";
   }
   else if (elem.type === "submit") {
-    console.log("there we go");
-  }
+    input.select();
+  }  
+});
+
+diacritics.addEventListener("click", function() {
+  var value = input.value;
+  var index = currentPosition - 1;
+  var letter = value[index];
+  var newValue = value.substr(0,index) + mapLetter(letter) + value.substr(index+1);
+  input.value = newValue;
+  input.setSelectionRange(currentPosition, currentPosition);
 });
 
 </script>
