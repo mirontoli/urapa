@@ -1,8 +1,9 @@
 <!DOCTYPE html><html lang="cv"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="chrome=1"><meta name="description" content="Урапа : Чӑваш тетел сарӑмӗ"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>html { -webkit-text-size-adjust: 100%; }</style><style>textarea {
-			width: 100vw;
+			min-width: 95vw;
 			min-height: 80px;
-		}</style></head><body><label for="input">Ҫыр:</label><textarea id="input"></textarea><script>var input = document.getElementById("input");
-var regex = /(?:[аесу])ьь/i;
+		}
+    /* http://stackoverflow.com/questions/2989263/disable-auto-zoom-in-input-text-tag-safari-on-iphone/6394497#6394497 */
+    textarea {font-size:16px;}</style></head><body><label for="input">Ҫыр:</label><input type="button" value="dia"><br><textarea id="input"></textarea><div id="actions"><input type="reset" value="тасат"> <input type="submit" value="копиле"> <input type="button" value="ӑ"> <input type="button" value="ӗ"> <input type="button" value="ҫ"> <input type="button" value="ӳ"></div><script>var regex = /(?:[аесу])ьь/i;
 var mapping = {"а": "ӑ", "е": "ӗ", "с": "ҫ", "у": "ӳ"};
 var replace = function(value) {
   var matches = regex.exec(value);
@@ -17,7 +18,8 @@ var replace = function(value) {
     return replace(newValue);
   }
   return value;
-}
+};
+var input = document.getElementById("input");
 input.addEventListener("keyup", function(e) {
   var elem = e.target;
   var value = elem.value;
@@ -29,7 +31,21 @@ input.addEventListener("keyup", function(e) {
       elem.value = newValue;
     }
   }
-} );</script><script type="text/javascript">var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+} );
+var actions = document.getElementById("actions");
+actions.addEventListener("click", function(e) {
+  var elem = e.target;
+  if (elem.type === "button") {
+    input.value = input.value + elem.value;
+  }
+  
+  else if (elem.type === "reset") {
+    input.value = "";
+  }
+  else if (elem.type === "submit") {
+    console.log("there we go");
+  }
+});</script><script type="text/javascript">var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
     document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));</script><script type="text/javascript">try {
       var pageTracker = _gat._getTracker("UA-644315-6");
     pageTracker._trackPageview();
