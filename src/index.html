@@ -20,5 +20,48 @@
   <body>
   <label for="input">Ҫыр:</label>
   <textarea id="input"></textarea>
+<script>
+var input = document.getElementById("input");
+var regex = /(?:[аесу])ьь/i;
+var mapping = {"а": "ӑ", "е": "ӗ", "с": "ҫ", "у": "ӳ"};
+var replace = function(value) {
+  var matches = regex.exec(value);
+  if (matches) {
+    var match = matches[0];
+    var firstLetter = match[0];
+    var loweredFirstLetter = firstLetter.toLowerCase();
+    var inLowerCase = loweredFirstLetter === firstLetter;
+    var desiredLetter = mapping[loweredFirstLetter];
+    var desiredLetterInRightCase = inLowerCase ? desiredLetter : desiredLetter.toUpperCase();
+    var newValue = value.replace(regex, desiredLetterInRightCase);
+    return replace(newValue);
+  }
+  return value;
+}
+input.addEventListener("keyup", function(e) {
+  var elem = e.target;
+  var value = elem.value;
+  console.log("value", value);
+  if (regex.test(value)) {
+    console.log("ba");
+    var newValue = replace(value);
+    if (value !== newValue) {
+      elem.value = newValue;
+    }
+  }
+} );
+</script>
+
+  <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script type="text/javascript">
+    try {
+      var pageTracker = _gat._getTracker("UA-644315-6");
+    pageTracker._trackPageview();
+    } catch(err) {}
+  </script>
+
   </body>
 </html>

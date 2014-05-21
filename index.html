@@ -1,4 +1,36 @@
 <!DOCTYPE html><html lang="cv"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="chrome=1"><meta name="description" content="Урапа : Чӑваш тетел сарӑмӗ"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>html { -webkit-text-size-adjust: 100%; }</style><style>textarea {
 			width: 100vw;
 			min-height: 80px;
-		}</style></head><body><label for="input">Ҫыр:</label><textarea id="input"></textarea></body></html>
+		}</style></head><body><label for="input">Ҫыр:</label><textarea id="input"></textarea><script>var input = document.getElementById("input");
+var regex = /(?:[аесу])ьь/i;
+var mapping = {"а": "ӑ", "е": "ӗ", "с": "ҫ", "у": "ӳ"};
+var replace = function(value) {
+  var matches = regex.exec(value);
+  if (matches) {
+    var match = matches[0];
+    var firstLetter = match[0];
+    var loweredFirstLetter = firstLetter.toLowerCase();
+    var inLowerCase = loweredFirstLetter === firstLetter;
+    var desiredLetter = mapping[loweredFirstLetter];
+    var desiredLetterInRightCase = inLowerCase ? desiredLetter : desiredLetter.toUpperCase();
+    var newValue = value.replace(regex, desiredLetterInRightCase);
+    return replace(newValue);
+  }
+  return value;
+}
+input.addEventListener("keyup", function(e) {
+  var elem = e.target;
+  var value = elem.value;
+  console.log("value", value);
+  if (regex.test(value)) {
+    console.log("ba");
+    var newValue = replace(value);
+    if (value !== newValue) {
+      elem.value = newValue;
+    }
+  }
+} );</script><script type="text/javascript">var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));</script><script type="text/javascript">try {
+      var pageTracker = _gat._getTracker("UA-644315-6");
+    pageTracker._trackPageview();
+    } catch(err) {}</script></body></html>
