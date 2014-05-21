@@ -91,13 +91,17 @@ actions.addEventListener("click", function(e) {
   }
   input.focus();
   if (elem.type === "button") {
-    input.value = input.value + elem.value;
+    currentPosition = input.selectionStart;
+    var value = input.value;
+    var newValue = value.substr(0,currentPosition) + elem.value + value.substr(input.selectionEnd);
+    input.value = newValue;
+    input.setSelectionRange(currentPosition + 1, currentPosition + 1);
   } 
   else if (elem.type === "reset") {
     input.value = "";
   }
   else if (elem.type === "submit") {
-    input.select();
+    input.focus().select();
   }  
 });
 
