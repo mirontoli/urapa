@@ -4,4 +4,4 @@ Urapa ([/uraba/](http://en.wikipedia.org/wiki/Chuvash_language)) is a light-weig
 
 This is a little mockup of the Urapa web application:
 
-![Urapa mockup](assets/urapa-001.png)
+![Urapa mockup](assets/urapa-001.jpg)
