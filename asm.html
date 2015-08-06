@@ -9,20 +9,129 @@
 }
 #workingOnIt {
 	display:none;
-}</style></head><body><header></header><section>"Таса мар" текст кӗрт:<br><div id="input" contenteditable="true"></div><div><span id="workingOnIt">Тӑхта, тасататпӑр...</span><input id="cleanButton" type="button" value="Тасат"></div></section><section id="intermediate"></section><section><div id="output"></div></section><script>var cleanButton = document.querySelector("#cleanButton");
-var workingOnIt = document.querySelector("#workingOnIt");
-function toggleNotification() {
-	if (!cleanButton.disabled)  {
-		workingOnIt.style.display = "inline";
-		cleanButton.disabled = true;
-	}
-	else  {
-		workingOnIt.style.display = "hidden";
-		cleanButton.removeAttribute("disabled");
-	}
+}</style></head><body><header></header><section>"Таса мар" текст кӗрт:<br><div id="input" contenteditable="true"></div><div><span id="workingOnIt">Тӑхта, тасататпӑр...</span><input id="cleanButton" type="button" value="Тасат"></div></section><section id="intermediate"></section><section><div id="output"></div></section><script>(function() {
+	var elements = {
+		input: document.querySelector("#input"),
+		intermediate: document.querySelector("#intermediate"),
+		cleanButton: document.querySelector("#cleanButton"),
+		workingOnIt: document.querySelector("#workingOnIt")
+	};
 
-}
-function clean(e)  {
-	toggleNotification();
-}
-cleanButton.addEventListener("click", clean);</script></body></html>
+	var utils = {
+		toArray: function(list) {
+	    	return Array.prototype.slice.call(list);
+		},
+		//http://stackoverflow.com/a/3593250
+		removeAllAttrs: function(element) {
+		    for (var i= element.attributes.length; i-->0;) {
+		        var attr = element.attributes[i];
+		        if (attr.name !== "dir") {
+		          element.removeAttributeNode(attr);
+		        }
+		    }
+		},
+		getElementContent: function(element) {
+		    var fragment = document.createDocumentFragment();
+		    while(element.firstChild) {
+		        fragment.appendChild(element.firstChild);
+		    }
+		    return fragment;
+		},
+		//http://stackoverflow.com/a/176404
+		replaceElementWithItsContent: function(element) {
+		    if(element.dir) {
+		        return;
+		    }
+		    var fragment = utils.getElementContent(element);
+		    element.parentNode.replaceChild(fragment, element);
+		},
+		joinSameSiblings: function(paragraph) {
+		    var childNodes = paragraph.childNodes;
+		    var currentNodeName = childNodes[0].nodeName;
+		    var index = 1; //we start from second to compare with the first
+		    var currentNode;
+		    var previousNode;
+		    while(index < childNodes.length) {
+		        currentNode = childNodes[index];
+		        previousNode = childNodes[index-1];
+		        if(currentNode.nodeName === previousNode.nodeName) {
+		            if (currentNode.nodeType === 3) {
+		                //it is just text
+		                previousNode.nodeValue = previousNode.nodeValue + currentNode.nodeValue;
+		            }
+		            else {
+		                //put content into the previous sibling
+		                //var fragment = getElementContent(childNodes[index]);
+		                //childNodes[index-1].appendChild(fragment);
+		                //paragraph.replaceChild(fragment, childNodes[index-1]);
+		            }
+		            childNodes[index].remove();
+		        }
+		        else {
+		            index++;
+		        }
+		    }
+		}
+	};
+
+	var ui = {
+		toggleNotification: function() {
+			if (!cleanButton.disabled)  {
+				workingOnIt.style.display = "inline";
+				cleanButton.disabled = true;
+			}
+			else  {
+				workingOnIt.style.display = "hidden";
+				cleanButton.removeAttribute("disabled");
+			}
+		},
+		emptyOutputAndIntermediate: function() {
+			elements.intermediate.innerHTML = "";
+			elements.output.innerHTML = "";
+		}
+	};
+
+	
+	var steps = {
+		removeAllAttrs: function() {
+			var allElements = elements.intermediate.querySelectorAll("*");
+			var allElementsAsArray = utils.toArray(allElements);
+			allElementsAsArray.forEach(removeAllAttrs);
+		},
+		removeEmptyElements: function() {
+			var allElements = elements.intermediate.querySelectorAll("*");
+			var allElementsAsArray = utils.toArray(allElements);
+			allElementsAsArray.forEach(function(elem) { if (elem.innerText === "") { elem.remove(); }});
+		},
+		removePageBreaksDivs: function() {
+			var divs = elements.intermediate.querySelectorAll("> div");
+			var divsAsArray = Array.prototype.slice.call(divs);
+			divsAsArray.forEach(replaceElementWithItsContent);
+		},
+		removeUnneededSpans: function() {
+			var spans = elements.intermediate.querySelectorAll("span");
+			var spansAsArray = utils.toArray(spans);
+			spansAsArray.forEach(utils.replaceElementWithItsContent);
+		},
+		removeEmptyParagraphs: function() {
+			var paragraphs = elements.intermediate.querySelectorAll("p");
+			var paragraphsAsArray = Array.prototype.slice.call(paragraphs);
+			paragraphsAsArray.forEach(function(p) {
+			    if (p.innerText.trim().length === 0) {
+			        p.remove();
+			    }
+			});
+		},
+		joinSameSiblings: function() {
+			var paragraphs = elements.intermediate.querySelectorAll("body > p");
+			var paragraphsAsArray = toArray(paragraphs);
+			paragraphsAsArray.forEach(joinSameSiblings);
+		}
+	};
+
+	function clean(e)  {
+		ui.toggleNotification();
+		ui.emptyOutputAndIntermediate();
+	}
+	cleanButton.addEventListener("click", clean);
+})();</script></body></html>
