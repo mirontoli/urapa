@@ -24,7 +24,8 @@ module.exports = function(grunt) {
           },
           files: {
               // Destination : Source
-              './index.html': './src/index.html'
+              './index.html': './src/index.html',
+              './asm.html': './src/asm.html'
           }
       }
     }

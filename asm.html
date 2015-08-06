@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ашмарин: Ворд текстне тасатасси</title>
+<style>
+#input  {
+	width:99%;
+	border: 1px solid black;
+	height: 200px;
+	overflow: auto;
+}
+#intermediate {
+	display:none;
+}
+#workingOnIt {
+	display:none;
+}
+</style>
+</head>
+<body>
+<header>
+</header>
+<section>
+"Таса мар" текст кӗрт:<br>
+<div id="input" contentEditable="true"></div>
+<div><span id="workingOnIt">Тӑхта, тасататпӑр...</span><input id="cleanButton" type="button"/ value="Тасат"></div>
+</section>
+<section id="intermediate"></section>
+<section>
+	<div id="output"></div>
+</section>
+<script>
+var cleanButton = document.querySelector("#cleanButton");
+var workingOnIt = document.querySelector("#workingOnIt");
+function toggleNotification() {
+	if (!cleanButton.disabled)  {
+		workingOnIt.style.display = "inline";
+		cleanButton.disabled = true;
+	}
+	else  {
+		workingOnIt.style.display = "hidden";
+		cleanButton.removeAttribute("disabled");
+	}
+
+}
+function clean(e)  {
+	toggleNotification();
+}
+cleanButton.addEventListener("click", clean);
+</script>
+</body>
+</html>
