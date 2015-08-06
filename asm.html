@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Ашмарин: Ворд текстне тасатасси</title>
-<style>
-#input  {
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ашмарин: Ворд текстне тасатасси</title><style>#input  {
 	width:99%;
 	border: 1px solid black;
 	height: 200px;
@@ -15,23 +9,7 @@
 }
 #workingOnIt {
 	display:none;
-}
-</style>
-</head>
-<body>
-<header>
-</header>
-<section>
-"Таса мар" текст кӗрт:<br>
-<div id="input" contentEditable="true"></div>
-<div><span id="workingOnIt">Тӑхта, тасататпӑр...</span><input id="cleanButton" type="button"/ value="Тасат"></div>
-</section>
-<section id="intermediate"></section>
-<section>
-	<div id="output"></div>
-</section>
-<script>
-var cleanButton = document.querySelector("#cleanButton");
+}</style></head><body><header></header><section>"Таса мар" текст кӗрт:<br><div id="input" contenteditable="true"></div><div><span id="workingOnIt">Тӑхта, тасататпӑр...</span><input id="cleanButton" type="button" value="Тасат"></div></section><section id="intermediate"></section><section><div id="output"></div></section><script>var cleanButton = document.querySelector("#cleanButton");
 var workingOnIt = document.querySelector("#workingOnIt");
 function toggleNotification() {
 	if (!cleanButton.disabled)  {
@@ -47,7 +25,4 @@ function toggleNotification() {
 function clean(e)  {
 	toggleNotification();
 }
-cleanButton.addEventListener("click", clean);
-</script>
-</body>
-</html>
+cleanButton.addEventListener("click", clean);</script></body></html>

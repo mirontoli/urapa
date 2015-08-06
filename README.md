@@ -15,12 +15,6 @@ npm install
 grunt build
 ```
 
-Alternatively, if you want to run it locally with a dev server.
-
-```
-grunt server
-```
-This will give you a livereload functionality where you can update the source code and see the changes directly in your browser without needing to reload the page.
 
 ### Hosting
 
@@ -30,7 +24,9 @@ The web apps is hosted on [Github Pages](https://help.github.com/articles/what-a
 
 The web app is deployed with the git command [subtree](https://gist.github.com/cobyism/4730490).
 ```sh
-git subtree push --prefix dist origin gh-pages
+git checkout gh-pages
+git merge master
+#git subtree push --prefix dist origin gh-pages
 ```
 
 Before you do it for the first time, make sure you don't have a branch gh-pages.
