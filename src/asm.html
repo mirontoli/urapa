@@ -5,10 +5,13 @@
 <title>Ашмарин: Ворд текстне тасатасси</title>
 <style>
 #input  {
-	width:99%;
 	border: 1px solid black;
 	height: 200px;
 	overflow: auto;
+}
+#output {
+	height: 500px;
+	border: 1px solid green;
 }
 #intermediate {
 	display:none;
@@ -35,6 +38,7 @@
 (function() {
 	var elements = {
 		input: document.querySelector("#input"),
+		output: document.querySelector("#output"),
 		intermediate: document.querySelector("#intermediate"),
 		cleanButton: document.querySelector("#cleanButton"),
 		workingOnIt: document.querySelector("#workingOnIt")
@@ -126,6 +130,7 @@
 			var allElementsAsArray = utils.toArray(allElements);
 			allElementsAsArray.forEach(function(elem) { if (elem.innerText === "") { elem.remove(); }});
 		},
+		//not needed on paste
 		removePageBreaksDivs: function() {
 			var divs = elements.intermediate.querySelectorAll("> div");
 			var divsAsArray = Array.prototype.slice.call(divs);
@@ -155,8 +160,20 @@
 	function clean(e)  {
 		ui.toggleNotification();
 		ui.emptyOutputAndIntermediate();
+		elements.intermediate.innerHTML = elements.input.innerHTML;
+		steps.removeAllAttrs();
+		steps.removeEmptyElements();
+		steps.removeUnneededSpans();
+		steps.removeEmptyParagraphs();
+
 	}
 	cleanButton.addEventListener("click", clean);
+
+	//temporary
+	window.elements = elements;
+	window.utils = utils;
+	window.ui = ui;
+	window.steps = steps;
 })();
 
 
