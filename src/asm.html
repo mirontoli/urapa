@@ -36,6 +36,10 @@
 <script>
 
 (function() {
+	var config = {
+		separator: "_$_mirontoli_$_"
+	};
+
 	var elements = {
 		input: document.querySelector("#input"),
 		output: document.querySelector("#output"),
@@ -123,7 +127,7 @@
 		removeAllAttrs: function() {
 			var allElements = elements.intermediate.querySelectorAll("*");
 			var allElementsAsArray = utils.toArray(allElements);
-			allElementsAsArray.forEach(removeAllAttrs);
+			allElementsAsArray.forEach(utils.removeAllAttrs);
 		},
 		removeEmptyElements: function() {
 			var allElements = elements.intermediate.querySelectorAll("*");
@@ -134,7 +138,7 @@
 		removePageBreaksDivs: function() {
 			var divs = elements.intermediate.querySelectorAll("> div");
 			var divsAsArray = Array.prototype.slice.call(divs);
-			divsAsArray.forEach(replaceElementWithItsContent);
+			divsAsArray.forEach(utils.replaceElementWithItsContent);
 		},
 		removeUnneededSpans: function() {
 			var spans = elements.intermediate.querySelectorAll("span");
@@ -143,7 +147,7 @@
 		},
 		removeEmptyParagraphs: function() {
 			var paragraphs = elements.intermediate.querySelectorAll("p");
-			var paragraphsAsArray = Array.prototype.slice.call(paragraphs);
+			var paragraphsAsArray = toArray(paragraphs);
 			paragraphsAsArray.forEach(function(p) {
 			    if (p.innerText.trim().length === 0) {
 			        p.remove();
@@ -151,9 +155,9 @@
 			});
 		},
 		joinSameSiblings: function() {
-			var paragraphs = elements.intermediate.querySelectorAll("body > p");
+			var paragraphs = elements.intermediate.querySelectorAll("> p");
 			var paragraphsAsArray = toArray(paragraphs);
-			paragraphsAsArray.forEach(joinSameSiblings);
+			paragraphsAsArray.forEach(utils.joinSameSiblings);
 		}
 	};
 
