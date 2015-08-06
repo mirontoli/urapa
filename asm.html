@@ -12,9 +12,10 @@
 }
 #workingOnIt {
 	display:none;
-}</style></head><body><header></header><section>"Таса мар" текст кӗрт:<br><div id="input" contenteditable="true"></div><div><span id="workingOnIt">Тӑхта, тасататпӑр...</span><input id="cleanButton" type="button" value="Тасат"></div></section><section id="intermediate"></section><section><div id="output"></div></section><script>(function() {
+}</style></head><body><header></header><section><div>Ку пӗр-ик минут илет. Тата Асӑрха: ҫак сайт Google Chrome браузерта анчах тӗрӗслесе пӑхрӑмӑр.</div><h2>"Таса мар" текст кӗрт:</h2><div id="input" contenteditable="true"></div><div><span id="workingOnIt">Тӑхта, тасататпӑр...</span><input id="cleanButton" type="button" value="Тасат"></div></section><section id="intermediate"></section><section><div id="output"></div></section><script>(function() {
 	var config = {
-		separator: "_$_mirontoli_$_"
+		separator: "_$_mirontoli_$_",
+		invalidEntryMarker: "INVALIDENTRY"
 	};
 
 	var elements = {
@@ -53,6 +54,17 @@
 		    var fragment = utils.getElementContent(element);
 		    element.parentNode.replaceChild(fragment, element);
 		},
+		normalizeCharacters: function(text) {
+			return text.replace(/ÿ/g, 'ӳ')
+						.replace(/Ÿ/g, 'Ӳ')
+						.replace(/ç/g, 'ҫ')
+						.replace(/Ç/g, 'Ҫ')
+						.replace(/ĕ/g, 'ӗ')
+						.replace(/Ĕ/g, 'Ӗ')
+						.replace(/ă/g, 'ӑ')
+						.replace(/Ă/g, 'Ӑ');
+
+		},
 		joinSameSiblings: function(paragraph) {
 		    var childNodes = paragraph.childNodes;
 		    var currentNodeName = childNodes[0].nodeName;
@@ -68,17 +80,52 @@
 		                previousNode.nodeValue = previousNode.nodeValue + currentNode.nodeValue;
 		            }
 		            else {
+		            	var content = utils.getElementContent(currentNode);
+		            	previousNode.appendChild(content);
+
 		                //put content into the previous sibling
 		                //var fragment = getElementContent(childNodes[index]);
 		                //childNodes[index-1].appendChild(fragment);
 		                //paragraph.replaceChild(fragment, childNodes[index-1]);
 		            }
-		            childNodes[index].remove();
+		            currentNode.remove();
 		        }
 		        else {
 		            index++;
 		        }
 		    }
+		},
+		parseParagraph: function(paragraph) {
+			//first child should be entry key:
+			var entryKeyElement = paragraph.firstChild;
+			var entry;
+			var entryKey = config.invalidEntryMarker;
+			var entryValue;
+			//it should exist, it should "B" node and it should contain inner Text
+			if (entryKeyElement && entryKeyElement.nodeName === "B" && entryKeyElement.innerText) {
+				entryKey = entryKeyElement.innerText.split(',')[0];
+			}
+			var entryValue = paragraph.innerHTML;
+			//check entry key again.
+			var entryKeyAgain = paragraph.innerText.split(",")[0];
+			if (entryKey !== entryKeyAgain) {
+				entryKey = config.invalidEntryMarker;
+			}
+			var replacedEntryValue = entryValue.replace(/<sub>/gi, '[sub]')
+						.replace(/<\/sub>/gi, '[/sub]')
+						.replace(/<sup>/gi, '[sup]')
+						.replace(/<\/sup>/gi, '[/sup]')
+						.replace(/<b>/gi, '[b]')
+						.replace(/<\/b>/gi, '[/b]')
+						.replace(/<i>/gi, '[i]')
+						.replace(/<\/i>/gi, '[/i]')
+						.replace(/<span dir="RTL">/gi, '[rtl]')
+						.replace(/<\/span>/gi, '[/rtl]');
+
+			entry = utils.normalizeCharacters(entryKey) + config.separator + utils.normalizeCharacters(replacedEntryValue);
+			ui.printOutput(entry);
+			console.log(entry);
+			console.log("-----------------------------------");
 		}
 	};
 
@@ -89,13 +136,19 @@
 				cleanButton.disabled = true;
 			}
 			else  {
-				workingOnIt.style.display = "hidden";
+				workingOnIt.style.display = "none";
 				cleanButton.removeAttribute("disabled");
 			}
 		},
 		emptyOutputAndIntermediate: function() {
 			elements.intermediate.innerHTML = "";
 			elements.output.innerHTML = "";
+		},
+		printOutput: function(textRow){
+			var node = document.createTextNode(textRow);
+			var br = document.createElement("br");
+			elements.output.appendChild(node);
+			elements.output.appendChild(br);
 		}
 	};
 
@@ -113,7 +166,7 @@
 		},
 		//not needed on paste
 		removePageBreaksDivs: function() {
-			var divs = elements.intermediate.querySelectorAll("> div");
+			var divs = elements.intermediate.querySelectorAll(":scope > div");
 			var divsAsArray = Array.prototype.slice.call(divs);
 			divsAsArray.forEach(utils.replaceElementWithItsContent);
 		},
@@ -124,17 +177,32 @@
 		},
 		removeEmptyParagraphs: function() {
 			var paragraphs = elements.intermediate.querySelectorAll("p");
-			var paragraphsAsArray = toArray(paragraphs);
+			var paragraphsAsArray = utils.toArray(paragraphs);
 			paragraphsAsArray.forEach(function(p) {
 			    if (p.innerText.trim().length === 0) {
 			        p.remove();
 			    }
 			});
 		},
+		removeSubAndSupsWithOnlySpace: function() {
+			var subsAndSups = elements.intermediate.querySelectorAll("sub,sup");
+			var subsAndSupsAsArray = utils.toArray(subsAndSups);
+			subsAndSupsAsArray.forEach(function(s) {
+				if (s.innerText === " ") {
+					s.parentNode.replaceChild(document.createTextNode(" "), s);
+				}
+			});
+		},
 		joinSameSiblings: function() {
-			var paragraphs = elements.intermediate.querySelectorAll("> p");
-			var paragraphsAsArray = toArray(paragraphs);
+			//about :scope http://stackoverflow.com/a/21126966
+			var paragraphs = elements.intermediate.querySelectorAll(":scope > p");
+			var paragraphsAsArray = utils.toArray(paragraphs);
 			paragraphsAsArray.forEach(utils.joinSameSiblings);
+		},
+		prepareForOutput: function() {
+			var paragraphs = elements.intermediate.querySelectorAll(":scope > p");
+			var paragraphsAsArray = utils.toArray(paragraphs);
+			paragraphsAsArray.forEach(utils.parseParagraph);
 		}
 	};
 
@@ -146,11 +214,16 @@
 		steps.removeEmptyElements();
 		steps.removeUnneededSpans();
 		steps.removeEmptyParagraphs();
+		steps.removeSubAndSupsWithOnlySpace();
+		steps.joinSameSiblings();
+		steps.prepareForOutput();
 
+		ui.toggleNotification();
 	}
 	cleanButton.addEventListener("click", clean);
 
 	//temporary
+	window.config = config;
 	window.elements = elements;
 	window.utils = utils;
 	window.ui = ui;
