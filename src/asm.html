@@ -95,22 +95,41 @@
 		},
 		joinSameSiblings: function(paragraph) {
 		    var childNodes = paragraph.childNodes;
-		    var currentNodeName = childNodes[0].nodeName;
+		    if (childNodes.length < 1) {
+		    	return;
+		    }
+		    var firstNode = childNodes[0];
+		    var currentNodeName = firstNode.nodeName;
 		    var index = 1; //we start from second to compare with the first
 		    var currentNode;
 		    var previousNode;
+
+		    //remove if comment
+		    if(firstNode.nodeType === 8) {
+		    	firstNode.remove();
+		    }
 		    while(index < childNodes.length) {
 		        currentNode = childNodes[index];
 		        previousNode = childNodes[index-1];
-		        if(currentNode.nodeName === previousNode.nodeName) {
+		        if(currentNode.nodeType === 8) {
+		        	currentNode.remove();
+		        }
+		        else if(currentNode.nodeName === previousNode.nodeName) {
 		            if (currentNode.nodeType === 3) {
 		                //it is just text
 		                previousNode.nodeValue = previousNode.nodeValue + currentNode.nodeValue;
 		            }
 		            else {
 		            	var content = utils.getElementContent(currentNode);
-		            	previousNode.appendChild(content);
 
+try {
+		            	previousNode.appendChild(content);
+}
+catch(ex) {
+	console.log("\n\n======================================")
+console.log(previousNode.nodeType, previousNode.nodeName);
+console.log(ex);
+}
 		                //put content into the previous sibling
 		                //var fragment = getElementContent(childNodes[index]);
 		                //childNodes[index-1].appendChild(fragment);
